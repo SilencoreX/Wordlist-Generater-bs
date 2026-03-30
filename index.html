@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Professional WordList Generator | Password Cracking Toolkit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0c15;
+            font-family: 'Inter', monospace;
+            padding: 2rem 1.5rem;
+            min-height: 100vh;
+        }
+
+        /* Main Container */
+        .app-container {
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            background: #0f111a;
+            border-radius: 24px;
+            border: 1px solid #1e2438;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: #0b0e16;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #1e2438;
+        }
+        .header h1 {
+            color: #eef2ff;
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+        .header p {
+            color: #7c85a6;
+            font-size: 0.8rem;
+            margin-top: 6px;
+            font-family: monospace;
+        }
+
+        /* Mode Selector */
+        .mode-selector {
+            padding: 1.5rem 2rem 0.5rem 2rem;
+            display: flex;
+            gap: 1rem;
+            border-bottom: 1px solid #1a1f2e;
+        }
+        .mode-btn {
+            flex: 1;
+            background: #0b0e18;
+            border: 1px solid #232838;
+            border-radius: 14px;
+            padding: 0.9rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #a3a9c2;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+        .mode-btn.active {
+            background: #1a2a4f;
+            border-color: #2d4985;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0,80,200,0.2);
+        }
+
+        /* All Inputs - Linear Layout (ek row mai ek) */
+        .inputs-area {
+            padding: 1.8rem 2rem;
+        }
+        .input-group {
+            margin-bottom: 1rem;
+            width: 100%;
+        }
+        .input-group label {
+            display: block;
+            color: #8f99c7;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            background: #06080f;
+            border: 1px solid #242b3f;
+            border-radius: 12px;
+            padding: 0.85rem 1rem;
+            color: #eef2ff;
+            font-size: 0.85rem;
+            font-family: 'Inter', monospace;
+            outline: none;
+            transition: 0.2s;
+        }
+        .input-group input:focus, .input-group select:focus {
+            border-color: #3b528b;
+            box-shadow: 0 0 0 2px rgba(59,82,139,0.3);
+        }
+        .input-group input::placeholder {
+            color: #3a405a;
+        }
+
+        /* quantity row */
+        .quantity-row {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .quantity-input {
+            flex: 2;
+        }
+        .presets {
+            flex: 1;
+            display: flex;
+            gap: 8px;
+        }
+        .preset-btn {
+            background: #12162a;
+            border: 1px solid #2a314b;
+            border-radius: 30px;
+            padding: 0.5rem 1rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #b9c3f0;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .preset-btn:hover {
+            background: #1f2a4a;
+            color: white;
+        }
+
+        /* action buttons */
+        .action-buttons {
+            padding: 0rem 2rem 1.8rem 2rem;
+            display: flex;
+            gap: 1rem;
+        }
+        .btn {
+            flex: 1;
+            background: #1f2b48;
+            border: none;
+            border-radius: 40px;
+            padding: 1rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: monospace;
+        }
+        .btn-primary {
+            background: #1f3b6b;
+            border: 1px solid #3266b0;
+        }
+        .btn-primary:hover {
+            background: #2b4a82;
+            transform: translateY(-1px);
+        }
+        .btn-download {
+            background: #0f2e2a;
+            border: 1px solid #2a6b5e;
+        }
+        .btn-download:hover {
+            background: #1c4e46;
+        }
+
+        /* output preview */
+        .output-area {
+            padding: 0 2rem 2rem 2rem;
+        }
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #1e2438;
+        }
+        .preview-header h3 {
+            color: #cbd5ff;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .preview-count {
+            background: #0f1222;
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            color: #7f8bc2;
+            font-family: monospace;
+        }
+        .wordlist-preview {
+            background: #080b12;
+            border-radius: 18px;
+            border: 1px solid #1a1f30;
+            max-height: 360px;
+            overflow-y: auto;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.75rem;
+        }
+        .preview-line {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid #151c2a;
+            color: #b9c7f0;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        .preview-line:last-child {
+            border-bottom: none;
+        }
+        .empty-state {
+            padding: 2rem;
+            text-align: center;
+            color: #4c5682;
+            font-family: monospace;
+        }
+
+        /* scroll */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0c18;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2d3557;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 650px) {
+            body { padding: 1rem; }
+            .inputs-area, .mode-selector, .action-buttons, .output-area { padding-left: 1.2rem; padding-right: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header">
+        <h1>WORDLIST GENERATOR</h1>
+        <p>Professional Password Cracking Toolkit | Termux / Linux Compatible</p>
+    </div>
+
+    <!-- Mode Selection: Random Mode vs Custom Pattern Mode -->
+    <div class="mode-selector">
+        <div class="mode-btn active" data-mode="random" id="randomModeBtn">RANDOM MODE</div>
+        <div class="mode-btn" data-mode="custom" id="customModeBtn">CUSTOM PATTERN MODE</div>
+    </div>
+
+    <!-- INPUTS AREA - LINEAR LAYOUT (ek row mai ek) -->
+    <div class="inputs-area" id="inputsArea">
+        <!-- Random Mode Fields: (only quantity controls, no edittext) -->
+        <div id="randomFields" style="display: block;">
+            <div class="input-group">
+                <label>PASSWORD COMPLEXITY</label>
+                <select id="randomComplexity">
+                    <option value="numeric">Numeric (0-9)</option>
+                    <option value="alphanum">Alphanumeric (a-z0-9)</option>
+                    <option value="full" selected>Full ASCII (a-z A-Z 0-9 !@#$)</option>
+                    <option value="loweralpha">Lowercase Alphabet (a-z)</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>PASSWORD LENGTH</label>
+                <input type="number" id="randomLength" value="8" min="4" max="20" step="1">
+            </div>
+        </div>
+
+        <!-- Custom Mode Fields: all edittext in linear fashion (name, birthday, partner etc) -->
+        <div id="customFields" style="display: none;">
+            <div class="input-group">
+                <label>BASE NAME / WORD (REQUIRED)</label>
+                <input type="text" id="customName" placeholder="e.g., john, admin, root, virat">
+            </div>
+            <div class="input-group">
+                <label>BIRTHDAY / YEAR</label>
+                <input type="text" id="customBirth" placeholder="1990, 2000, 1505">
+            </div>
+            <div class="input-group">
+                <label>PARTNER / SECOND NAME</label>
+                <input type="text" id="customPartner" placeholder="jane, sita, anna">
+            </div>
+            <div class="input-group">
+                <label>CLASS / TEAM / SPORTS</label>
+                <input type="text" id="customClass" placeholder="cricket, liverpool, alpha">
+            </div>
+            <div class="input-group">
+                <label>SPECIAL WORDS (comma separated)</label>
+                <input type="text" id="customSpecial" placeholder="admin,pass,secret,welcome">
+            </div>
+            <div class="input-group">
+                <label>CUSTOM SUFFIX / PREFIX PATTERN</label>
+                <input type="text" id="customPattern" placeholder="example: {name}@{year} , {name}123 , pass{year}">
+            </div>
+            <div class="input-group">
+                <label>LEET SPEAK (1337) : yes/no</label>
+                <select id="leetMode">
+                    <option value="no">No</option>
+                    <option value="yes">Yes (a->4, e->3, i->1, o->0)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- QUANTITY CONTROLS (common) -->
+        <div class="input-group" style="margin-top: 1rem;">
+            <label>NUMBER OF PASSWORDS TO GENERATE</label>
+            <div class="quantity-row">
+                <div class="quantity-input">
+                    <input type="number" id="quantityValue" value="10000" min="1" max="50000000" step="1000">
+                </div>
+                <div class="presets">
+                    <button class="preset-btn" data-val="1000">1K</button>
+                    <button class="preset-btn" data-val="10000">10K</button>
+                    <button class="preset-btn" data-val="100000">100K</button>
+                    <button class="preset-btn" data-val="1000000">1M</button>
+                    <button class="preset-btn" data-val="10000000">10M</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="action-buttons">
+        <button class="btn btn-primary" id="generateBtn">GENERATE WORDLIST</button>
+        <button class="btn btn-download" id="downloadBtn">DOWNLOAD TXT FILE</button>
+    </div>
+
+    <!-- OUTPUT PREVIEW -->
+    <div class="output-area">
+        <div class="preview-header">
+            <h3>WORDLIST PREVIEW (first 100 lines)</h3>
+            <div class="preview-count" id="previewCount">0 entries</div>
+        </div>
+        <div class="wordlist-preview" id="previewContainer">
+            <div class="empty-state">No wordlist generated. Click GENERATE.</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ---------- GLOBALS ----------
+    let currentMode = "random";      // random or custom
+    let generatedPasswords = [];     // array of strings (each password line)
+
+    // DOM elements
+    const randomModeBtn = document.getElementById('randomModeBtn');
+    const customModeBtn = document.getElementById('customModeBtn');
+    const randomFieldsDiv = document.getElementById('randomFields');
+    const customFieldsDiv = document.getElementById('customFields');
+    const generateBtn = document.getElementById('generateBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const previewContainer = document.getElementById('previewContainer');
+    const previewCountSpan = document.getElementById('previewCount');
+    const quantityInput = document.getElementById('quantityValue');
+
+    // ---------- Helper: leet speak conversion ----------
+    function toLeet(str) {
+        const leetMap = { 'a':'4', 'e':'3', 'i':'1', 'o':'0', 's':'5', 't':'7' };
+        return str.split('').map(ch => leetMap[ch.toLowerCase()] || ch).join('');
+    }
+
+    // ---------- RANDOM PASSWORD GENERATOR (powerful, high entropy) ----------
+    function generateRandomPassword(length, complexity) {
+        let chars = "";
+        if (complexity === "numeric") chars = "0123456789";
+        else if (complexity === "loweralpha") chars = "abcdefghijklmnopqrstuvwxyz";
+        else if (complexity === "alphanum") chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+        else if (complexity === "full") chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{};:<>?";
+        let result = "";
+        for (let i = 0; i < length; i++) {
+            result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return result;
+    }
+
+    // ---------- CUSTOM PATTERN GENERATOR (advanced wordlist based on user inputs) ----------
+    // Builds a list of combinations from base words, years, partners, specials, and pattern
+    function generateCustomPasswords(limit) {
+        const baseName = document.getElementById('customName').value.trim().toLowerCase();
+        const birthYear = document.getElementById('customBirth').value.trim();
+        const partnerName = document.getElementById('customPartner').value.trim().toLowerCase();
+        const className = document.getElementById('customClass').value.trim().toLowerCase();
+        const specialRaw = document.getElementById('customSpecial').value.trim();
+        const customPattern = document.getElementById('customPattern').value.trim();
+        const leetEnabled = document.getElementById('leetMode').value === 'yes';
+        
+        // fallback: if name is empty, use "default"
+        let nameWords = baseName ? [baseName] : [];
+        if (baseName === "") nameWords = ["admin", "user", "root", "password"];
+        
+        let years = [];
+        if (birthYear) {
+            years.push(birthYear);
+            if (birthYear.length === 4) {
+                years.push(birthYear.slice(2,4));
+            }
+        } else {
+            years = ["1990", "2000", "2020", "1985", "1975", "2024", "1999", "2005", "2010", "2023"];
+        }
+        
+        let partners = partnerName ? [partnerName] : ["love", "angel", "baby", "sweet", "rock", "star"];
+        let classes = className ? [className] : ["master", "elite", "alpha", "beta", "omega", "pro"];
+        
+        let specials = [];
+        if (specialRaw) {
+            specials = specialRaw.split(',').map(s => s.trim().toLowerCase()).filter(s => s.length > 0);
+        } else {
+            specials = ["admin", "pass", "secret", "welcome", "login", "qwerty", "letmein", "123456"];
+        }
+        
+        let generated = new Set();
+        let finalList = [];
+        
+        // Helper to add password with leet transformation
+        function addPassword(pwd) {
+            if (generated.has(pwd)) return;
+            if (leetEnabled) {
+                let leetPwd = toLeet(pwd);
+                if (!generated.has(leetPwd)) {
+                    generated.add(leetPwd);
+                    finalList.push(leetPwd);
+                }
+            }
+            generated.add(pwd);
+            finalList.push(pwd);
+        }
+        
+        // 1. If custom pattern is provided, use it as template: {name} , {year} , {partner} , {class}, {special}
+        if (customPattern && customPattern.includes('{')) {
+            // pattern example: "{name}@{year}" , "{name}{class}123"
+            for (let nm of nameWords) {
+                for (let yr of years) {
+                    for (let pt of partners.slice(0,5)) {
+                        for (let cl of classes.slice(0,5)) {
+                            for (let sp of specials.slice(0,5)) {
+                                let result = customPattern;
+                                result = result.replace(/{name}/g, nm);
+                                result = result.replace(/{year}/g, yr);
+                                result = result.replace(/{partner}/g, pt);
+                                result = result.replace(/{class}/g, cl);
+                                result = result.replace(/{special}/g, sp);
+                                if (result.length > 3 && result.length < 40) addPassword(result);
+                                if (finalList.length >= limit * 1.2) break;
+                            }
+                            if (finalList.length >= limit * 1.2) break;
+                        }
+                        if (finalList.length >= limit * 1.2) break;
+                    }
+                    if (finalList.length >= limit * 1.2) break;
+                }
+                if (finalList.length >= limit * 1.2) break;
+            }
+        }
+        
+        // 2. Basic combination logic (name+year, name+partner, name+special, etc.)
+        if (finalList.length < limit) {
+            for (let nm of nameWords) {
+                for (let yr of years) {
+                    addPassword(nm + yr);
+                    addPassword(yr + nm);
+                    addPassword(nm + "@" + yr);
+                    addPassword(nm + yr + "!");
+                    if (finalList.length >= limit) break;
+                }
+                for (let pt of partners) {
+                    addPassword(nm + pt);
+                    addPassword(pt + nm);
+                    addPassword(nm + "_" + pt);
+                    if (finalList.length >= limit) break;
+                }
+                for (let sp of specials) {
+                    addPassword(nm + sp);
+                    addPassword(sp + nm);
+                    addPassword(nm + sp + "123");
+                    if (finalList.length >= limit) break;
+                }
+                for (let cl of classes) {
+                    addPassword(nm + cl);
+                    addPassword(cl + nm);
+                    if (finalList.length >= limit) break;
+                }
+            }
+        }
+        
+        // 3. Append common weak passwords + year combos to fill up
+        const commonPass = ["password", "123456", "qwerty", "admin", "welcome", "letmein", "master", "sunshine", "iloveyou", "dragon"];
+        if (finalList.length < limit) {
+            for (let yr of years) {
+                for (let common of commonPass.slice(0,10)) {
+                    addPassword(common + yr);
+                    addPassword(common + "@" + yr);
+                    addPassword(yr + common);
+                    if (finalList.length >= limit) break;
+                }
+            }
+        }
+        
+        // 4. fallback: random alphanumeric filler if still less than limit
+        while (finalList.length < limit && limit <= 500000) {
+            let filler = Math.random().toString(36).substring(2, 10) + (Math.floor(Math.random() * 999));
+            addPassword(filler);
+        }
+        
+        // trim to exact limit
+        return finalList.slice(0, limit);
+    }
+    
+    // ---------- RANDOM GENERATION (pure random passwords) ----------
+    function generateRandomPasswords(quantity) {
+        const complexity = document.getElementById('randomComplexity').value;
+        let length = parseInt(document.getElementById('randomLength').value, 10);
+        if (isNaN(length)) length = 8;
+        length = Math.min(Math.max(length, 4), 24);
+        let passwords = [];
+        const chunkSize = 5000;
+        for (let i = 0; i < quantity; i++) {
+            passwords.push(generateRandomPassword(length, complexity));
+            if (i % chunkSize === 0 && i > 0) {
+                // yield for responsiveness
+                setTimeout(() => {}, 0);
+            }
+        }
+        return passwords;
+    }
+    
+    // show loading indicator
+    function setLoading(loading) {
+        generateBtn.textContent = loading ? "GENERATING..." : "GENERATE WORDLIST";
+        generateBtn.disabled = loading;
+        downloadBtn.disabled = loading;
+    }
+    
+    // main generate function
+    async function generateWordlist() {
+        let quantity = parseInt(quantityInput.value, 10);
+        if (isNaN(quantity) || quantity < 1) quantity = 1000;
+        if (quantity > 50000000) {
+            alert("Maximum limit 50,000,000 entries. Reducing to 50M.");
+            quantity = 50000000;
+            quantityInput.value = 50000000;
+        }
+        
+        setLoading(true);
+        
+        // use setTimeout to allow UI update
+        await new Promise(resolve => setTimeout(resolve, 20));
+        
+        let result = [];
+        if (currentMode === "random") {
+            result = generateRandomPasswords(quantity);
+        } else {
+            // custom mode: validate at least some base
+            const nameField = document.getElementById('customName').value.trim();
+            if (!nameField && quantity > 100) {
+                // optional warning but still generate with default fallback
+                console.log("No base name provided, using fallback defaults");
+            }
+            result = generateCustomPasswords(quantity);
+        }
+        
+        generatedPasswords = result;
+        updatePreview();
+        setLoading(false);
+        
+        // shake effect on preview container
+        const previewDiv = document.getElementById('previewContainer');
+        previewDiv.style.transform = "scale(0.99)";
+        setTimeout(() => previewDiv.style.transform = "", 150);
+    }
+    
+    function updatePreview() {
+        if (!generatedPasswords.length) {
+            previewContainer.innerHTML = '<div class="empty-state">No wordlist generated. Click GENERATE.</div>';
+            previewCountSpan.innerText = "0 entries";
+            return;
+        }
+        previewCountSpan.innerText = `${generatedPasswords.length.toLocaleString()} entries (showing first 100)`;
+        const previewLines = generatedPasswords.slice(0, 100);
+        let html = '';
+        for (let line of previewLines) {
+            html += `<div class="preview-line">${escapeHtml(line)}</div>`;
+        }
+        previewContainer.innerHTML = html;
+    }
+    
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function downloadWordlist() {
+        if (!generatedPasswords.length) {
+            alert("No wordlist generated. Please generate first.");
+            return;
+        }
+        const content = generatedPasswords.join("\n");
+        const blob = new Blob([content], {type: "text/plain"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `wordlist_${currentMode}_${generatedPasswords.length}_passwords.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+    
+    // Switch modes: random mode = edittext fields gone, custom mode = all edittext visible (linear)
+    function setMode(mode) {
+        currentMode = mode;
+        if (mode === "random") {
+            randomModeBtn.classList.add("active");
+            customModeBtn.classList.remove("active");
+            randomFieldsDiv.style.display = "block";
+            customFieldsDiv.style.display = "none";
+        } else {
+            customModeBtn.classList.add("active");
+            randomModeBtn.classList.remove("active");
+            randomFieldsDiv.style.display = "none";
+            customFieldsDiv.style.display = "block";
+        }
+        // reset generated list when mode changes
+        generatedPasswords = [];
+        updatePreview();
+    }
+    
+    // preset quantity
+    function setupPresets() {
+        const presetBtns = document.querySelectorAll('.preset-btn');
+        presetBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const val = parseInt(btn.getAttribute('data-val'), 10);
+                if (!isNaN(val)) quantityInput.value = val;
+            });
+        });
+    }
+    
+    // Event Listeners
+    randomModeBtn.addEventListener('click', () => setMode("random"));
+    customModeBtn.addEventListener('click', () => setMode("custom"));
+    generateBtn.addEventListener('click', generateWordlist);
+    downloadBtn.addEventListener('click', downloadWordlist);
+    setupPresets();
+    
+    // initial state: random mode active, custom fields hidden
+    setMode("random");
+    generatedPasswords = [];
+    updatePreview();
+</script>
+</body>
+</html>
